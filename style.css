@@ -2,29 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-.measures-container {
+body {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
 }
 
-.measure {
-  display: flex;
-  flex-direction: column;
-}
-
-.measure-header {
-  font-family: sans-serif;
-  font-size: 18px;
-}
-
-.dist-frame {
-  height: 400px;
-}
-
-.dist-frame,
-.evo-frame {
-  width: 500px;
-  border: 0;
-  display: block;
+.graph-container {
+  width: 45vw;
 }
