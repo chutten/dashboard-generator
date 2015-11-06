@@ -2,11 +2,42 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-body {
-  display: flex;
-  flex-flow: row wrap;
+/* hack to multiline the form controls */
+label::before {
+  content: '';
+  display: block;
 }
 
-.graph-container {
-  width: 45vw;
+button {
+  display: block;
+  margin: 1ex 0;
+}
+
+#metric {
+  /* those hist names are long. Give lots of space so the datalist is useful */
+  max-width: 72ex;
+  width: 100%;
+}
+
+.dashboard-plots {
+  border: 1px solid black;
+}
+
+.dashboard-plots th {
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 1ex;
+}
+
+.dashboard-plots th:last-child {
+  border-right: 0;
+}
+
+.dashboard-plots td {
+  /* some of those hit names are really long */
+  word-break: break-all;
+}
+
+.dashboard-plots tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.15);
 }
