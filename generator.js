@@ -133,7 +133,7 @@ window.addEventListener('load', function () {
 
     const EXTERNAL_CSS = '' +
       BASE_URL + 'new-pipeline/style/metricsgraphics.css;' +
-      BASE_URL + 'new-pipeline/style/telemetry-wrapper.css';
+      BASE_URL + 'wrapper/telemetry-wrapper.css';
 
     const EXTERNAL_JS = '' +
       'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js;' +
@@ -141,10 +141,31 @@ window.addEventListener('load', function () {
       BASE_URL + 'new-pipeline/lib/metricsgraphics.js;' +
       BASE_URL + 'new-pipeline/lib/d3pie.min.js;' +
       BASE_URL + 'v2/telemetry.js;' +
-      BASE_URL + 'new-pipeline/src/telemetry-wrapper.js';
+      BASE_URL + 'wrapper/telemetry-wrapper.js';
 
-    const JS = `
-var plots = ${JSON.stringify(_dash)};
+    const HTML = '' +
+`<!-- To customize your generated dashboard, edit the styles in the CSS window.
+   - To share or export your dashboard, first click 'Save' to solidify this pen.
+   - Then, you can share the url for collaboration or hit 'Export' to grab the
+   - sources so you can self-host.
+ -->
+`;
+
+    const CSS = '' +
+`body {
+  display: flex;
+  flex-flow: row wrap;
+}
+.graph-container {
+  width: 45vw;
+}
+.graph-title {
+  text-decoration: underline;
+}
+`;
+
+    const JS = '' +
+`var plots = ${JSON.stringify(_dash, null, '  ')};
 window.addEventListener('load', () => {
   for (plot of plots) {
     TelemetryWrapper.go(plot, document.body);
@@ -154,6 +175,8 @@ window.addEventListener('load', () => {
     var postData = {
       title: 'Generated Dashboard',
       editors: '111',
+      css: CSS,
+      html: HTML,
       js: JS,
       head: "<meta name='viewport' content='width=device-width'>",
       css_external: EXTERNAL_CSS,
