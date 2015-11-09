@@ -2,20 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/* not sure if I still need this
-var params = {};
-var start = 1; // skip leading '?'
-while (start < window.location.search.length) {
-  var end = window.location.search.indexOf('&', start);
-  if (end == -1) {
-    end = window.location.search.length;
-  }
-  var [name, value] = window.location.search.substring(start, end).split('=');
-  params[name] = value;
-  start = end + 1;
-}
-*/
-
+// shortcuts
 var $ = (selector) => document.querySelector(selector);
 var $all = (selector) => document.querySelectorAll(selector);
 
@@ -24,9 +11,8 @@ window.addEventListener('load', function () {
   var _dash = []; // ordered list of plots for your dash
 
   Telemetry.init(() => {
-    // why don't I put this in a Promise? Because this way looks cleaner
 
-    // versions are static across the session, so keep 'em
+    // versions are static across the session, so stash 'em
     _versions = {};
     Telemetry.getVersions()
       .sort()
@@ -47,6 +33,9 @@ window.addEventListener('load', function () {
     updateVersions();
     updateMetricsAndCompares();
 
+    $('#compare').addEventListener('change', () =>
+      $('#sensible-compare').disabled = !$('#compare').selectedOptions[0].value);
+
     $('#add').addEventListener('click', addPlotToDash);
 
   });
@@ -61,7 +50,7 @@ window.addEventListener('load', function () {
       trim: $('#trim').checked,
       compare: $('#compare').selectedOptions[0].value,
       sensibleCompare: $('#sensible-compare').checked,
-      evoVersions: $('#evo-versions').value,
+      evoVersions: $('#evo-radio').checked ? $('#evo-versions').value : 0,
     };
 
     _dash.push(plotParams);
@@ -82,7 +71,7 @@ window.addEventListener('load', function () {
   }
 
   function updateChannels() {
-    // unlike the other update*, this one ought only to be called once
+    // unlike the other update*(), this one ought only to be called once
 
     Object.keys(_versions)
       .forEach(channel => {
@@ -110,6 +99,9 @@ window.addEventListener('load', function () {
           .forEach(metric => createOption($('#metrics'), metric));
         Object.keys(filterOptions)
           .forEach(filterName => createOption($('#compare'), filterName));
+
+        $('#metrics').dispatchEvent(new Event('change'));
+        $('#compare').dispatchEvent(new Event('change'));
       });
   }
 

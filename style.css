@@ -2,15 +2,61 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/* hack to multiline the form controls */
-label::before {
-  content: '';
-  display: block;
-}
-
 button {
   display: block;
   margin: 1ex 0;
+}
+
+fieldset {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  display: block;
+  padding: 0.5ex;
+}
+
+.help {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.tab-group {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.tab-group input[type="radio"] {
+  visibility: hidden;
+  height: 0;
+  width: 0;
+  -moz-appearance: none;
+}
+
+.tab-group input:checked + label {
+  background-color: #C13832;
+  color: white;
+}
+
+.tab-label {
+  -moz-user-select: none;
+  padding: 0.5ex;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1 0 100%;
+}
+
+#evo-radio:checked ~ .hist-tab {
+  display: none;
+}
+
+#hist-radio:checked ~ .evo-tab {
+  display: none;
 }
 
 #metric {
