@@ -40,7 +40,7 @@
     <!-- Filters are a pain to do using form controls
        - so provide only a few common ones -->
     <div class="tab-group">
-      <input id="show-filters" type="checkbox"/>
+      <input autocomplete="off" id="show-filters" type="checkbox"/>
       <label for="show-filters" class="tab-label">Filters</label>
       <div class="tab filter-tab">
         <label>Application:
@@ -66,9 +66,9 @@
   </fieldset>
   <fieldset>
     <div class="tab-group">
-      <input id="hist-radio" type="radio" name="hist-evo" checked/>
+      <input autocomplete="off" id="hist-radio" type="radio" name="hist-evo" checked/>
       <label for="hist-radio" class="tab-label">Histogram</label>
-      <input id="evo-radio" type="radio" name="hist-evo"/>
+      <input autocomplete="off" id="evo-radio" type="radio" name="hist-evo"/>
       <label for="evo-radio" class="tab-label">Evolution</label>
       <div class="tab hist-tab">
         <label>Trim:
@@ -124,8 +124,8 @@
     </tbody>
   </table>
   <form action="http://codepen.io/pen/define" method="POST" target="_blank">
-    <input id="post-data" type="hidden" name="data"/>
-    <button id="generate" type="submit" disabled>Generate Dashboard</button>
+    <input autocomplete="off" id="post-data" type="hidden" name="data"/>
+    <button autocomplete="off" id="generate" type="submit" disabled>Generate Dashboard</button>
   </form>
 </main>
 </body>
