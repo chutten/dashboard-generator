@@ -82,6 +82,8 @@ window.addEventListener('load', function () {
         var td = document.createElement('td');
         if (typeof plotParams[param] == 'object') {
           td.textContent = JSON.stringify(plotParams[param]);
+        } else if (param == 'version' && !plotParams[param]) {
+          td.textContent = '-Latest-';
         } else {
           td.textContent = plotParams[param];
         }
@@ -122,6 +124,7 @@ window.addEventListener('load', function () {
   function updateVersions() {
     removeAllChildren($('#version'));
 
+    createOption($('#version'), '', '-Latest-');
     _versions[$('#channel').selectedOptions[0].value]
       .forEach(version => createOption($('#version'), version));
   }
@@ -132,9 +135,15 @@ window.addEventListener('load', function () {
     removeAllChildren($('#application'));
     removeAllChildren($('#os'));
 
+    var channel = $('#channel').selectedOptions[0].value;
+    var version = $('#version').selectedOptions[0].value;
+    if (!version) {
+      version = _versions[channel][0];
+    }
+
     Telemetry.getFilterOptions(
-      $('#channel').selectedOptions[0].value,
-      $('#version').selectedOptions[0].value,
+      channel,
+      version,
       filterOptions => {
 
         filterOptions['metric']
