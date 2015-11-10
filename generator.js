@@ -115,7 +115,7 @@ window.addEventListener('load', function () {
   function updateE10s() {
     // well, okay, this one only ought to be called once, too
 
-    createOption($('#e10s'), '');
+    createOption($('#e10s'), '', '-No Filter-');
     for (op in E10S_OPTIONS) {
       createOption($('#e10s'), op);
     }
@@ -154,7 +154,7 @@ window.addEventListener('load', function () {
           .forEach(filterName => createOption($('#compare'), filterName));
 
         // Only use the Uppercased app names, as they are the relevant ones
-        createOption($('#application'), '');
+        createOption($('#application'), '', '-No Filter-');
         filterOptions['application']
           .filter(appName =>
             appName[0] == appName[0].toUpperCase() && isNaN(appName[0] * 1))
@@ -162,7 +162,7 @@ window.addEventListener('load', function () {
 
         // OS has only three useful families: Windows, Linux, OSX
         // so as long as they're all in filterOptions, they all get displayed
-        createOption($('#os'), '');
+        createOption($('#os'), '', '-No Filter-');
         var OSes = {
           'Darwin': 'OSX',
           'Linux': 'Linux',
