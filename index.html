@@ -36,8 +36,34 @@
       </datalist>
     </label>
   </fieldset>
-  <!-- Filters are a pain to do using form controls
-     - so force users to use the editor -->
+  <fieldset>
+    <!-- Filters are a pain to do using form controls
+       - so provide only a few common ones -->
+    <div class="tab-group">
+      <input id="show-filters" type="checkbox"/>
+      <label for="show-filters" class="tab-label">Filters</label>
+      <div class="tab filter-tab">
+        <label>Application:
+          <select id="application">
+            <!-- populated on #version.onchange -->
+          </select>
+          <div class="help">Include only samples from the selected application.</div>
+        </label>
+        <label>OS:
+          <select id="os">
+            <!-- populated on #version.onchange -->
+          </select>
+          <div class="help">Include only samples from the selected OS family.</div>
+        </label>
+        <label>E10s Setting:
+          <select id="e10s">
+            <!-- populated on load -->
+          </select>
+          <div class="help">Include only samples that come from clients or processes that have appropriate E10s settings</div>
+        </label>
+      </div>
+    </div>
+  </fieldset>
   <fieldset>
     <div class="tab-group">
       <input id="hist-radio" type="radio" name="hist-evo" checked/>
@@ -91,6 +117,7 @@
         <th>Compare</th>
         <th>Sensible Compare</th>
         <th>Versions for Evolution</th>
+        <th>Filters</th>
       </tr>
     </thead>
     <tbody class="dashboard-plots-body">

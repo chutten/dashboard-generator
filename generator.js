@@ -28,10 +28,11 @@ window.addEventListener('load', function () {
 
     // why do I register these in here? Because their handlers need T.init
     $('#channel').addEventListener('change', updateVersions);
-    $('#version').addEventListener('change', updateMetricsAndCompares);
+    $('#version').addEventListener('change', updateMetricsAndComparesAndAppsAndOS);
     updateChannels();
     updateVersions();
-    updateMetricsAndCompares();
+    updateMetricsAndComparesAndAppsAndOS();
+    updateE10s();
 
     $('#compare').addEventListener('change', () =>
       $('#sensible-compare').disabled = !$('#compare').selectedOptions[0].value);
@@ -51,15 +52,39 @@ window.addEventListener('load', function () {
       compare: $('#compare').selectedOptions[0].value,
       sensibleCompare: $('#sensible-compare').checked,
       evoVersions: $('#evo-radio').checked ? $('#evo-versions').value : 0,
+      filters: undefined,
     };
+
+    // now to add the filters
+    if ($('#show-filters').checked) {
+      var filters = {};
+      if ($('#application').selectedOptions[0].value) {
+        filters.application = $('#application').selectedOptions[0].value;
+      }
+      if ($('#os').selectedOptions[0].value) {
+        filters.os = $('#os').selectedOptions[0].value;
+      }
+      var e10sFilters = E10S_OPTIONS[$('#e10s').selectedOptions[0].value];
+      if (e10sFilters) {
+        for (var filterName in e10sFilters) {
+          filters[filterName] = e10sFilters[filterName];
+        }
+      }
+      plotParams.filters = filters;
+    }
 
     _dash.push(plotParams);
 
+    // put the params in the table so there are no surprises for the user
     var tr = document.createElement('tr');
     Object.keys(plotParams) // better hope it preserved order
       .forEach(param => {
         var td = document.createElement('td');
-        td.textContent = plotParams[param];
+        if (typeof plotParams[param] == 'object') {
+          td.textContent = JSON.stringify(plotParams[param]);
+        } else {
+          td.textContent = plotParams[param];
+        }
         tr.appendChild(td);
       });
     $('.dashboard-plots-body').appendChild(tr);
@@ -79,6 +104,21 @@ window.addEventListener('load', function () {
       });
   }
 
+  const E10S_OPTIONS = {
+    'E10s Both Processes': {e10sEnabled: true},
+    'E10s Parent-only': {e10sEnabled: true, child: false},
+    'E10s Child-only': {e10sEnabled: true, child: true},
+    'Single Process': {e10sEnabled: false, child: false},
+  };
+  function updateE10s() {
+    // well, okay, this one only ought to be called once, too
+
+    createOption($('#e10s'), '');
+    for (op in E10S_OPTIONS) {
+      createOption($('#e10s'), op);
+    }
+  }
+
   function updateVersions() {
     removeAllChildren($('#version'));
 
@@ -86,19 +126,44 @@ window.addEventListener('load', function () {
       .forEach(version => createOption($('#version'), version));
   }
 
-  function updateMetricsAndCompares() {
+  function updateMetricsAndComparesAndAppsAndOS() {
     removeAllChildren($('#metrics'));
     removeAllChildren($('#compare'));
+    removeAllChildren($('#application'));
+    removeAllChildren($('#os'));
 
     Telemetry.getFilterOptions(
       $('#channel').selectedOptions[0].value,
       $('#version').selectedOptions[0].value,
       filterOptions => {
-        createOption($('#compare'), '', 'None');
+
         filterOptions['metric']
           .forEach(metric => createOption($('#metrics'), metric));
+
+        createOption($('#compare'), '', 'None');
         Object.keys(filterOptions)
           .forEach(filterName => createOption($('#compare'), filterName));
+
+        // Only use the Uppercased app names, as they are the relevant ones
+        createOption($('#application'), '');
+        filterOptions['application']
+          .filter(appName =>
+            appName[0] == appName[0].toUpperCase() && isNaN(appName[0] * 1))
+          .forEach(appName => createOption($('#application'), appName));
+
+        // OS has only three useful families: Windows, Linux, OSX
+        // so as long as they're all in filterOptions, they all get displayed
+        createOption($('#os'), '');
+        var OSes = {
+          'Darwin': 'OSX',
+          'Linux': 'Linux',
+          'Windows_NT': 'Windows',
+        };
+        for (var family in OSes) {
+          if (filterOptions['os'].some(osName => osName.startsWith(family))) {
+            createOption($('#os'), family, OSes[family]);
+          }
+        }
 
         $('#metrics').dispatchEvent(new Event('change'));
         $('#compare').dispatchEvent(new Event('change'));

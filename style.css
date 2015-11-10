@@ -17,6 +17,18 @@ label {
   padding: 0.5ex;
 }
 
+#show-filters + .tab-label:before {
+  content: '\229E\00a0';
+}
+
+#show-filters:checked + .tab-label:before {
+  content: '\229F\00a0';
+}
+
+#show-filters:not(:checked) ~ .filter-tab {
+  display: none;
+}
+
 .help {
   font-size: 12px;
   font-style: italic;
@@ -27,7 +39,7 @@ label {
   flex-flow: row wrap;
 }
 
-.tab-group input[type="radio"] {
+.tab-group > input {
   visibility: hidden;
   height: 0;
   width: 0;
