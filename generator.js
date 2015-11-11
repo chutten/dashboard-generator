@@ -39,6 +39,7 @@ window.addEventListener('load', function () {
 
     $('#add').addEventListener('click', addPlotToDash);
 
+    loadPlotsFromLocation();
   });
 
   function addPlotToDash() {
@@ -75,6 +76,12 @@ window.addEventListener('load', function () {
 
     _dash.push(plotParams);
 
+    addPlotToTable(plotParams);
+
+    updatePostData();
+  }
+
+  function addPlotToTable(plotParams) {
     // put the params in the table so there are no surprises for the user
     var tr = document.createElement('tr');
     Object.keys(plotParams) // better hope it preserved order
@@ -93,8 +100,6 @@ window.addEventListener('load', function () {
 
     // now that the dash spec has a plot, user can generate a dash
     $('#generate').removeAttribute('disabled');
-
-    updatePostData();
   }
 
   function updateChannels() {
@@ -193,6 +198,86 @@ window.addEventListener('load', function () {
     }
   }
 
+  function loadPlotsFromLocation() {
+    var params = {};
+    var start = 1;
+    while (start < window.location.search.length) {
+      var end = window.location.search.indexOf('&', start);
+      if (end == -1) {
+        end = window.location.search.length;
+      }
+      var [name, value] = window.location.search.substring(start, end).split('=');
+      params[name] = value.split(';');
+      params[name] = params[name].map(value
+        => window.decodeURIComponent(value.replace(/\+/g, ' ')));
+      start = end + 1;
+    }
+
+    if (!('channel' in params)) {
+      return; // no params to load
+    }
+
+    // params is in {name: [value1, value2, ..], ...} format
+    // we need [{name: value1,...}, {name: value2,...}, ...]
+    var plots = [];
+    params['channel'] // channel is always present
+      .forEach((channel, i) => {
+        var plot = {
+          channel: channel,
+          version: params['version'][i],
+          metric: params['metric'][i],
+          useSubmissionDate: params['useSubmissionDate'][i],
+          sanitize: params['sanitize'][i],
+          trim: params['trim'][i],
+          compare: params['compare'][i],
+          sensibleCompare: params['sensibleCompare'][i],
+          evoVersions: params['evoVersions'][i],
+          filters: params['filters'][i] ? JSON.parse(params['filters'][i]) : '',
+        };
+        _dash.push(plot);
+        addPlotToTable(plot);
+      });
+    updatePostData();
+  }
+
+  function getGeneratorUrl() {
+    var channels = [];
+    var versions = [];
+    var metrics = [];
+    var useSubmissionDates = [];
+    var sanitizes = [];
+    var trims = [];
+    var compares = [];
+    var sensibleCompares = [];
+    var evoVersionses = [];
+    var filterses = [];
+    _dash.forEach(plot => {
+      channels.push(plot.channel);
+      versions.push(plot.version || '');
+      metrics.push(plot.metric);
+      useSubmissionDates.push(plot.useSubmissionDate || false);
+      sanitizes.push(plot.sanitize || false);
+      trims.push(plot.trim || false);
+      compares.push(plot.compare || '');
+      sensibleCompares.push(plot.sensibleCompare || false);
+      evoVersionses.push(plot.evoVersions || 0);
+      filterses.push(plot.filters ? JSON.stringify(plot.filters) : '');
+    });
+
+    var queryString = '?' +
+      `channel=${channels.join(';')}&version=${versions.join(';')}` +
+      `&metric=${metrics.join(';')}&useSubmissionDate=${useSubmissionDates.join(';')}` +
+      `&sanitize=${sanitizes.join(';')}&trim=${trims.join(';')}` +
+      `&compare=${compares.join(';')}&sensibleCompare=${sensibleCompares.join(';')}` +
+      `&evoVersions=${evoVersionses.join(';')}&filters=${filterses.join(';')}`;
+
+    if (!window.location.search) {
+      return window.location.href + queryString;
+    } else {
+      return window.location.href.replace(window.location.search, queryString);
+    }
+  }
+
   function updatePostData() {
     // TODO: change over to t.m.o when everything's pushed
     const BASE_URL = 'http://chutten.github.io/telemetry-dashboard/';
@@ -232,6 +317,11 @@ window.addEventListener('load', function () {
 
     const JS = '' +
 `var plots = ${JSON.stringify(_dash, null, '  ')};
+
+/* The generator that created this dash can be found at:
+ * ${getGeneratorUrl()}
+ */
+
 window.addEventListener('load', () => {
   for (plot of plots) {
     TelemetryWrapper.go(plot, document.body);
