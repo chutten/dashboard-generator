@@ -99,3 +99,8 @@ label {
 .dashboard-plots tr:nth-child(even) {
   background-color: rgba(0, 0, 0, 0.15);
 }
+
+.rm-button {
+  padding: 0;
+  margin: auto;
+}

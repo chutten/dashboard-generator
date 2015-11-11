@@ -96,6 +96,20 @@ window.addEventListener('load', function () {
         }
         tr.appendChild(td);
       });
+
+    var rmTd = document.createElement('td');
+    var rmButton = document.createElement('button');
+    rmButton.className = 'rm-button';
+    rmButton.textContent = '-';
+    rmButton.addEventListener('click', () => {
+      var plotIndex = Array.prototype.indexOf.call(tr.parentElement.children, tr);
+      _dash.splice(plotIndex, 1);
+      updatePostData();
+      tr.parentElement.removeChild(tr);
+    });
+    rmTd.appendChild(rmButton);
+    tr.appendChild(rmTd);
+
     $('.dashboard-plots-body').appendChild(tr);
 
     // now that the dash spec has a plot, user can generate a dash
