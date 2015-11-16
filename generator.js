@@ -4,7 +4,6 @@
 
 // shortcuts
 var $ = (selector) => document.querySelector(selector);
-var $all = (selector) => document.querySelectorAll(selector);
 
 window.addEventListener('load', function () {
   var _versions; // {channel: [versions (sorted)], ...}
@@ -26,7 +25,6 @@ window.addEventListener('load', function () {
         }
       });
 
-    // why do I register these in here? Because their handlers need T.init
     $('#channel').addEventListener('change', updateVersions);
     $('#version').addEventListener('change', updateMetricsAndComparesAndAppsAndOS);
     updateChannels();
