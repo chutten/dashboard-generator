@@ -220,8 +220,8 @@ window.addEventListener('load', function () {
       }
       var [name, value] = window.location.search.substring(start, end).split('=');
       params[name] = value.split(';');
-      params[name] = params[name].map(value
-        => window.decodeURIComponent(value.replace(/\+/g, ' ')));
+      params[name] = params[name].map(value =>
+        window.decodeURIComponent(value.replace(/\+/g, ' ')));
       start = end + 1;
     }
 
