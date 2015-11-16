@@ -293,8 +293,7 @@ window.addEventListener('load', function () {
   }
 
   function updatePostData() {
-    // TODO: change over to t.m.o when everything's pushed
-    const BASE_URL = 'http://chutten.github.io/telemetry-dashboard/';
+    const BASE_URL = 'https://telemetry.mozilla.org/';
 
     const EXTERNAL_CSS = '' +
       BASE_URL + 'new-pipeline/style/metricsgraphics.css;' +
