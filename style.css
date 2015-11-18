@@ -2,6 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+:root {
+  font-family: sans-serif;
+}
+
 button {
   display: block;
   margin: 1ex 0;
@@ -92,7 +96,7 @@ label {
 }
 
 .dashboard-plots td {
-  /* some of those hit names are really long */
+  /* some of those hist names are really long */
   word-break: break-all;
 }
 

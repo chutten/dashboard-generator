@@ -2,8 +2,22 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// shortcuts
+// utility functions
 var $ = (selector) => document.querySelector(selector);
+
+var createOption = (parent, value, text = value, selected = false) => {
+  var option = document.createElement('option');
+  option.value = value;
+  option.textContent = text;
+  option.selected = selected;
+  parent.appendChild(option);
+};
+
+var removeAllChildren = (el) => {
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+};
 
 window.addEventListener('load', function () {
   var _versions; // {channel: [versions (sorted)], ...}
@@ -130,7 +144,7 @@ window.addEventListener('load', function () {
     'Single Process': {e10sEnabled: false, child: false},
   };
   function updateE10s() {
-    // well, okay, this one only ought to be called once, too
+    // well, okay, this one ought only to be called once, too
 
     createOption($('#e10s'), '', '-No Filter-');
     for (op in E10S_OPTIONS) {
@@ -194,20 +208,6 @@ window.addEventListener('load', function () {
         $('#metrics').dispatchEvent(new Event('change'));
         $('#compare').dispatchEvent(new Event('change'));
       });
-  }
-
-  function createOption(parent, value, text = value, selected = false) {
-    var option = document.createElement('option');
-    option.value = value;
-    option.textContent = text;
-    option.selected = selected;
-    parent.appendChild(option);
-  }
-
-  function removeAllChildren(el) {
-    while (el.firstChild) {
-      el.removeChild(el.firstChild);
-    }
   }
 
   function loadPlotsFromLocation() {
